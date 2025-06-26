@@ -14,10 +14,25 @@ import { PremiumFeatures } from '@/components/PremiumFeatures';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('focus');
-  const [focusStreak, setFocusStreak] = useState(7);
-  const [todayFocusTime, setTodayFocusTime] = useState(142); // minutes
-  const [weeklyGoal] = useState(1200); // minutes
-  const [currentLevel, setCurrentLevel] = useState(12);
+  const [focusStreak, setFocusStreak] = useState(0); // Start from 0
+  const [todayFocusTime, setTodayFocusTime] = useState(0); // Start from 0 minutes
+  const [weeklyGoal] = useState(300); // 5 hours per week - realistic starting goal
+  const [currentLevel, setCurrentLevel] = useState(1); // Start from level 1
+  const [focusScore, setFocusScore] = useState(0); // Start from 0%
+
+  // Function to update today's focus time (called from FocusTimer)
+  const updateFocusTime = (minutes) => {
+    setTodayFocusTime(prev => prev + minutes);
+    // Update focus score based on time spent
+    const newScore = Math.min(100, Math.round((todayFocusTime + minutes) / (weeklyGoal / 7) * 100));
+    setFocusScore(newScore);
+    
+    // Level up logic
+    const newLevel = Math.floor((todayFocusTime + minutes) / 60) + 1;
+    setCurrentLevel(newLevel);
+  };
+
+  const weeklyProgress = Math.round((todayFocusTime * 7) / weeklyGoal * 100);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -38,7 +53,7 @@ const Index = () => {
             </div>
             <div className="flex items-center space-x-4">
               <Badge variant="secondary" className="text-green-700 bg-green-100">
-                {focusStreak} day streak 🔥
+                {focusStreak === 0 ? 'Start your streak!' : `${focusStreak} day streak 🔥`}
               </Badge>
               <Badge variant="outline" className="text-blue-700">
                 Level {currentLevel}
@@ -57,7 +72,9 @@ const Index = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-blue-100 text-sm">Today's Focus</p>
-                  <p className="text-3xl font-bold">{Math.floor(todayFocusTime / 60)}h {todayFocusTime % 60}m</p>
+                  <p className="text-3xl font-bold">
+                    {todayFocusTime === 0 ? '0m' : `${Math.floor(todayFocusTime / 60)}h ${todayFocusTime % 60}m`}
+                  </p>
                 </div>
                 <Timer className="w-8 h-8 text-blue-200" />
               </div>
@@ -69,7 +86,7 @@ const Index = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-purple-100 text-sm">Focus Score</p>
-                  <p className="text-3xl font-bold">87%</p>
+                  <p className="text-3xl font-bold">{focusScore}%</p>
                 </div>
                 <Brain className="w-8 h-8 text-purple-200" />
               </div>
@@ -81,7 +98,8 @@ const Index = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-green-100 text-sm">Rank</p>
-                  <p className="text-3xl font-bold">#23</p>
+                  <p className="text-3xl font-bold">--</p>
+                  <p className="text-green-100 text-xs">Complete first session</p>
                 </div>
                 <Users className="w-8 h-8 text-green-200" />
               </div>
@@ -93,7 +111,7 @@ const Index = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-orange-100 text-sm">Weekly Goal</p>
-                  <p className="text-3xl font-bold">{Math.round((todayFocusTime * 7) / weeklyGoal * 100)}%</p>
+                  <p className="text-3xl font-bold">{weeklyProgress}%</p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-orange-200" />
               </div>
@@ -112,7 +130,7 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="focus" className="space-y-6">
-            <FocusTimer />
+            <FocusTimer onSessionComplete={updateFocusTime} />
           </TabsContent>
 
           <TabsContent value="monitor" className="space-y-6">
@@ -124,7 +142,7 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <AnalyticsDashboard />
+            <AnalyticsDashboard focusTime={todayFocusTime} focusScore={focusScore} />
           </TabsContent>
 
           <TabsContent value="premium" className="space-y-6">

@@ -7,12 +7,16 @@ import { Badge } from '@/components/ui/badge';
 import { Play, Pause, RotateCcw, Coffee, Brain, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-export const FocusTimer = () => {
+interface FocusTimerProps {
+  onSessionComplete?: (minutes: number) => void;
+}
+
+export const FocusTimer = ({ onSessionComplete }: FocusTimerProps) => {
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes in seconds
   const [sessionType, setSessionType] = useState<'focus' | 'break'>('focus');
   const [completedSessions, setCompletedSessions] = useState(0);
-  const [focusIntensity, setFocusIntensity] = useState(85);
+  const [focusIntensity, setFocusIntensity] = useState(100);
   const { toast } = useToast();
 
   const totalTime = sessionType === 'focus' ? 25 * 60 : 5 * 60;
@@ -25,15 +29,22 @@ export const FocusTimer = () => {
       interval = setInterval(() => {
         setTimeLeft(prev => prev - 1);
         // Simulate focus intensity fluctuation
-        setFocusIntensity(prev => Math.max(60, Math.min(100, prev + (Math.random() - 0.5) * 10)));
+        setFocusIntensity(prev => Math.max(70, Math.min(100, prev + (Math.random() - 0.3) * 5)));
       }, 1000);
     } else if (timeLeft === 0) {
       setIsRunning(false);
       if (sessionType === 'focus') {
+        const sessionMinutes = 25;
         setCompletedSessions(prev => prev + 1);
+        
+        // Call the parent component's function to update stats
+        if (onSessionComplete) {
+          onSessionComplete(sessionMinutes);
+        }
+        
         toast({
           title: "🎉 Focus session complete!",
-          description: "Great job! Time for a well-deserved break.",
+          description: "Great job! You've earned 25 minutes of focus time.",
         });
         setSessionType('break');
         setTimeLeft(5 * 60);
@@ -48,7 +59,7 @@ export const FocusTimer = () => {
     }
 
     return () => clearInterval(interval);
-  }, [isRunning, timeLeft, sessionType, toast]);
+  }, [isRunning, timeLeft, sessionType, toast, onSessionComplete]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -75,6 +86,7 @@ export const FocusTimer = () => {
   const handleReset = () => {
     setIsRunning(false);
     setTimeLeft(sessionType === 'focus' ? 25 * 60 : 5 * 60);
+    setFocusIntensity(100);
     toast({
       title: "🔄 Session reset",
       description: "Timer reset to beginning.",
@@ -136,9 +148,9 @@ export const FocusTimer = () => {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Completed Sessions</span>
-              <Badge variant="secondary">{completedSessions}/8</Badge>
+              <Badge variant="secondary">{completedSessions}/4</Badge>
             </div>
-            <Progress value={(completedSessions / 8) * 100} className="h-2" />
+            <Progress value={(completedSessions / 4) * 100} className="h-2" />
             
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Focus Intensity</span>
@@ -156,7 +168,9 @@ export const FocusTimer = () => {
             <CardTitle className="text-lg">Session Types</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border-2 border-blue-200">
+            <div className={`flex items-center justify-between p-3 rounded-lg border-2 ${
+              sessionType === 'focus' ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
+            }`}>
               <div className="flex items-center space-x-3">
                 <Brain className="w-5 h-5 text-blue-600" />
                 <span className="font-medium">Focus (25 min)</span>
@@ -173,7 +187,9 @@ export const FocusTimer = () => {
                 Select
               </Button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border-2 border-green-200">
+            <div className={`flex items-center justify-between p-3 rounded-lg border-2 ${
+              sessionType === 'break' ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
+            }`}>
               <div className="flex items-center space-x-3">
                 <Coffee className="w-5 h-5 text-green-600" />
                 <span className="font-medium">Break (5 min)</span>
