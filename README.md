@@ -1,4 +1,3 @@
-
 # FocusFlow - Deep Work, Amplified 🚀
 
 FocusFlow is an AI-powered productivity platform designed to help professionals eliminate distractions and achieve deep, focused work sessions. Built with modern web technologies, it combines smart focus tracking, AI voice coaching, and distraction monitoring to maximize your productivity.
@@ -177,25 +176,9 @@ We welcome contributions! Please follow these steps:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🆘 Support
-
-- **Documentation**: [docs.focusflow.com](https://docs.focusflow.com)
-- **Community**: [Discord Server](https://discord.gg/focusflow)
-- **Email**: support@focusflow.com
-- **Issues**: [GitHub Issues](https://github.com/yourusername/focusflow/issues)
-
-## 🌟 Acknowledgments
-
-- Built with [Lovable](https://lovable.dev) - AI-powered web development
-- Icons by [Lucide](https://lucide.dev)
-- UI components by [shadcn/ui](https://ui.shadcn.com)
-
----
+- **Email**: yaswanthsai5704@gmail.com
 
 **Start your journey to deeper focus today!** 🎯
 
-[Live Demo](https://focusflow.netlify.app) | [GitHub](https://github.com/yourusername/focusflow) | [Documentation](https://docs.focusflow.com)
+[Live Demo](https://focusflowseesion.netlify.app/) | [GitHub](https://github.com/YASWANTH1976/vibe-session-creator) | 
