@@ -11,6 +11,7 @@ import { DistractionMonitor } from '@/components/DistractionMonitor';
 import { SocialLeaderboard } from '@/components/SocialLeaderboard';
 import { AnalyticsDashboard } from '@/components/AnalyticsDashboard';
 import { PremiumFeatures } from '@/components/PremiumFeatures';
+import { AIVoiceCoach } from '@/components/AIVoiceCoach';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('focus');
@@ -121,9 +122,10 @@ const Index = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-6 mb-8">
             <TabsTrigger value="focus">Focus Session</TabsTrigger>
-            <TabsTrigger value="monitor">Distraction Monitor</TabsTrigger>
+            <TabsTrigger value="voice">AI Coach</TabsTrigger>
+            <TabsTrigger value="monitor">Monitor</TabsTrigger>
             <TabsTrigger value="social">Social Hub</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="premium">Premium</TabsTrigger>
@@ -131,6 +133,10 @@ const Index = () => {
 
           <TabsContent value="focus" className="space-y-6">
             <FocusTimer onSessionComplete={updateFocusTime} />
+          </TabsContent>
+
+          <TabsContent value="voice" className="space-y-6">
+            <AIVoiceCoach />
           </TabsContent>
 
           <TabsContent value="monitor" className="space-y-6">
